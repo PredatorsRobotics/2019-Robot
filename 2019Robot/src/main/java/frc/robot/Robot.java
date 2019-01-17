@@ -4,7 +4,7 @@
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
-//Test
+
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
@@ -21,9 +21,10 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
  * directory.
  */
 public class Robot extends TimedRobot {
-  private final DifferentialDrive m_robotDrive
-      = new DifferentialDrive(new Spark(0), new Spark(1));
-  private final Joystick m_stick = new Joystick(0);
+  private Spark driveMotors[] = { new Spark(0), new Spark(1), new Spark(2), new Spark(3) };
+  private RobotDrive m_robotDrive = new RobotDrive(driveMotors[0], driveMotors[2], driveMotors[1], driveMotors[3]);
+  private Spark sideDrive = new Spark(4);
+  private final Joystick controller = new Joystick(0);
   private final Timer m_timer = new Timer();
    
   /**
@@ -63,12 +64,24 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
   }
 
+
+
   /**
    * This function is called periodically during teleoperated mode.
    */
+
+
+
+
   @Override
   public void teleopPeriodic() {
-    m_robotDrive.arcadeDrive(m_stick.getY(), m_stick.getX());
+
+    //Basic drive
+    m_robotDrive.arcadeDrive(controller.getY(), controller.getX());
+
+    //Side drive
+    if (controller.POV()
+  
   }
 
   /**
