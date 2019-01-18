@@ -79,8 +79,19 @@ public class Robot extends TimedRobot {
     //Basic drive
     m_robotDrive.arcadeDrive(controller.getY(), controller.getX());
 
+    
+
+    
     //Side drive
-    if (controller.POV()
+    if (controller.POV() = 0) {
+
+    sideDrive.set(.5);
+    }
+
+    if (controller.POV() = 180) {
+
+      sideDrive.set(.5);
+    }
   
   }
 
