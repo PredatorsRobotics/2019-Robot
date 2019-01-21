@@ -24,8 +24,10 @@ public class Robot extends TimedRobot {
   private Spark driveMotors[] = { new Spark(0), new Spark(1), new Spark(2), new Spark(3) };
   private RobotDrive m_robotDrive = new RobotDrive(driveMotors[0], driveMotors[2], driveMotors[1], driveMotors[3]);
   private Spark sideDrive = new Spark(4);
-  private final Joystick controller = new Joystick(0);
+  private Joystick controller = new Joystick(0);
   private final Timer m_timer = new Timer();
+  public int getPOV;
+  
    
   /**
    * This function is run when the robot is first started up and should be
@@ -81,18 +83,25 @@ public class Robot extends TimedRobot {
 
     
 
-    
-    //Side drive
-    if (controller.POV() = 0) {
 
-    sideDrive.set(.5);
+    //Side drive
+
+
+    if (controller.getRawButton(6)) { // Left trigger pressed, go left
+
+      sideDrive.set(-.5);
     }
 
-    if (controller.POV() = 180) {
+
+    if (controller.getRawButton(7)) { // Right trigger pressed, go right
 
       sideDrive.set(.5);
     }
-  
+
+    if (controller.getRawButton(7) && controller.getRawButton(6)) { // If both, do nothing
+
+      sideDrive.set(0);
+    }
   }
 
   /**
