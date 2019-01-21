@@ -26,7 +26,6 @@ public class Robot extends TimedRobot {
   private Spark sideDrive = new Spark(4);
   private Joystick controller = new Joystick(0);
   private final Timer m_timer = new Timer();
-  public int getPOV;
   
    
   /**
