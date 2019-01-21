@@ -27,7 +27,6 @@ public class Robot extends TimedRobot {
   private Joystick controller = new Joystick(0);
   private final Timer m_timer = new Timer();
   public int getPOV;
-  private Servo elevator = new Servo(1);
   
    
   /**
