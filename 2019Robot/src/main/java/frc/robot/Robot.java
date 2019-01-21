@@ -8,6 +8,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Spark;
@@ -21,8 +22,13 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
  * directory.
  */
 public class Robot extends TimedRobot {
-  private Spark driveMotors[] = { new Spark(0), new Spark(1), new Spark(2), new Spark(3) };
-  private RobotDrive m_robotDrive = new RobotDrive(driveMotors[0], driveMotors[2], driveMotors[1], driveMotors[3]);
+  private Spark m_frontLeft = new Spark(0);
+	private Spark m_rearLeft = new Spark(1);
+	private SpeedControllerGroup m_left = new SpeedControllerGroup(m_frontLeft, m_rearLeft);
+	private Spark m_frontRight = new Spark(2);
+	private Spark m_rearRight = new Spark(3);
+  private SpeedControllerGroup m_Right = new SpeedControllerGroup(m_frontRight, m_rearRight);
+	private DifferentialDrive m_robotdrive = new DifferentialDrive(m_left, m_right);
   private Spark sideDrive = new Spark(4);
   private Joystick controller = new Joystick(0);
   private final Timer m_timer = new Timer();
@@ -95,7 +101,7 @@ public class Robot extends TimedRobot {
       sideDrive.set(.5);
     }
 
-    if (controller.getRawButton(7) && controller.getRawButton(6)) { // If both, do nothing
+    else {
 
       sideDrive.set(0);
     }
