@@ -27,6 +27,7 @@ public class Robot extends TimedRobot {
   private Joystick controller = new Joystick(0);
   private final Timer m_timer = new Timer();
   public int getPOV;
+  private Servo elevator = new Servo(1);
   
    
   /**
@@ -81,8 +82,6 @@ public class Robot extends TimedRobot {
     //Basic drive
     m_robotDrive.arcadeDrive(controller.getY(), controller.getX());
 
-    
-
 
     //Side drive
 
@@ -102,6 +101,11 @@ public class Robot extends TimedRobot {
 
       sideDrive.set(0);
     }
+
+
+    //Elevator
+    
+
   }
 
   /**
