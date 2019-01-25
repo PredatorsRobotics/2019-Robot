@@ -8,11 +8,11 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -27,7 +27,7 @@ public class Robot extends TimedRobot {
 	private SpeedControllerGroup m_left = new SpeedControllerGroup(m_frontLeft, m_rearLeft);
 	private Spark m_frontRight = new Spark(2);
 	private Spark m_rearRight = new Spark(3);
-  private SpeedControllerGroup m_Right = new SpeedControllerGroup(m_frontRight, m_rearRight);
+  private SpeedControllerGroup m_right = new SpeedControllerGroup(m_frontRight, m_rearRight);
 	private DifferentialDrive m_robotdrive = new DifferentialDrive(m_left, m_right);
   private Spark sideDrive = new Spark(4);
   private Joystick controller = new Joystick(0);
@@ -58,9 +58,9 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {
     // Drive for 2 seconds
     if (m_timer.get() < 2.0) {
-      m_robotDrive.arcadeDrive(0.5, 0.0); // drive forwards half speed
+      m_robotdrive.arcadeDrive(0.5, 0.0); // drive forwards half speed
     } else {
-      m_robotDrive.stopMotor(); // stop robot
+      m_robotdrive.stopMotor(); // stop robot
     }
   }
 
@@ -84,7 +84,7 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
 
     //Basic drive
-    m_robotDrive.arcadeDrive(controller.getY(), controller.getX());
+    m_robotdrive.arcadeDrive(controller.getY(), controller.getX());
 
 
     //Side drive
