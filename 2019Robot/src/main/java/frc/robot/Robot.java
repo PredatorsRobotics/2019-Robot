@@ -101,7 +101,7 @@ public class Robot extends TimedRobot {
       sideDrive.set(.5);
     }
 
-    else {
+    else { 
 
       sideDrive.set(0);
     }
