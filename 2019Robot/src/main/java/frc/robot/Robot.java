@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
+/* Open Source Software %- may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
@@ -90,13 +90,13 @@ public class Robot extends TimedRobot {
     //Side drive
 
 
-    if (controller.getRawButton(6)) { // Left trigger pressed, go left
+    if (controller.getRawButton(7)) { // Left trigger pressed, go left
 
       sideDrive.set(-.5);
     }
 
 
-    if (controller.getRawButton(7)) { // Right trigger pressed, go right
+    if (controller.getRawButton(8)) { // Right trigger pressed, go right
 
       sideDrive.set(.5);
     }
