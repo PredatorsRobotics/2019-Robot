@@ -92,7 +92,7 @@ public class Robot extends TimedRobot {
 
     if (controller.getRawButton(7)) { // Left trigger pressed, go left
 
-      sideDrive.set(-1);
+      sideDrive.set(-.5);
     }
 
 
