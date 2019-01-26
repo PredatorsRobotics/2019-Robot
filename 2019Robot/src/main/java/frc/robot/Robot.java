@@ -33,6 +33,8 @@ public class Robot extends TimedRobot {
   private Joystick controller = new Joystick(0);
   private final Timer m_timer = new Timer();
   
+
+  
    
   /**
    * This function is run when the robot is first started up and should be
@@ -69,6 +71,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopInit() {
+
+
   }
 
 
@@ -84,7 +88,7 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
 
     //Basic drive
-    m_robotdrive.arcadeDrive(controller.getY()*-1, controller.getX()*-1);
+    m_robotdrive.arcadeDrive(controller.getY(), controller.getX()*-1);
 
 
     //Side drive
