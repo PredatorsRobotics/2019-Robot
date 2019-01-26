@@ -84,7 +84,7 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
 
     //Basic drive
-    m_robotdrive.arcadeDrive(controller.getY(-1), controller.getX(-1));
+    m_robotdrive.arcadeDrive(controller.getY(), controller.getX());
 
 
     //Side drive
@@ -92,13 +92,13 @@ public class Robot extends TimedRobot {
 
     if (controller.getRawButton(7)) { // Left trigger pressed, go left
 
-      sideDrive.set(.5);
+      sideDrive.set(-.5);
     }
 
 
     if (controller.getRawButton(8)) { // Right trigger pressed, go right
 
-      sideDrive.set(-.5);
+      sideDrive.set(.5);
     }
 
     else { 
