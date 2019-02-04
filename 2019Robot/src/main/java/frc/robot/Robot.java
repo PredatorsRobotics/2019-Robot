@@ -22,11 +22,11 @@ import edu.wpi.first.wpilibj.SpeedControllerGroup;
  * directory.
  */
 public class Robot extends TimedRobot {
-  private Spark m_frontLeft = new Spark(0);
-	private Spark m_rearLeft = new Spark(1);
+  private Spark m_frontLeft = new Spark(1);
+	private Spark m_rearLeft = new Spark(0);
 	private SpeedControllerGroup m_left = new SpeedControllerGroup(m_frontLeft, m_rearLeft);
-	private Spark m_frontRight = new Spark(2);
-	private Spark m_rearRight = new Spark(3);
+	private Spark m_frontRight = new Spark(3);
+	private Spark m_rearRight = new Spark(2);
   private SpeedControllerGroup m_right = new SpeedControllerGroup(m_frontRight, m_rearRight);
 	private DifferentialDrive m_robotdrive = new DifferentialDrive(m_left, m_right);
   private Spark sideDrive = new Spark(4);
@@ -92,7 +92,7 @@ public class Robot extends TimedRobot {
 
     if (controller.getRawButton(7)) { // Left trigger pressed, go left
 
-      sideDrive.set(-.5);
+      sideDrive.set(.5);
     }
 
 
