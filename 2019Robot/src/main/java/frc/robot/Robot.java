@@ -33,6 +33,8 @@ public class Robot extends TimedRobot {
   private Joystick controller = new Joystick(0);
   private final Timer m_timer = new Timer();
   
+
+  
    
   /**
    * This function is run when the robot is first started up and should be
@@ -69,6 +71,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopInit() {
+
+
   }
 
 
@@ -84,7 +88,7 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
 
     //Basic drive
-    m_robotdrive.arcadeDrive(controller.getY(), controller.getX());
+    m_robotdrive.arcadeDrive(controller.getY(), controller.getX()*-1);
 
 
     //Side drive
@@ -96,16 +100,14 @@ public class Robot extends TimedRobot {
     }
 
 
-    if (controller.getRawButton(8)) { // Right trigger pressed, go right
+    else if (controller.getRawButton(8)) { // Right trigger pressed, go right
 
       sideDrive.set(.5);
     }
 
-    else { 
-
+    else {
       sideDrive.set(0);
     }
-
 
     //Elevator
     
