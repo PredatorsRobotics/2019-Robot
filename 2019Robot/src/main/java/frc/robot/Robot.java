@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.command.Command;
+import commands.java;
 
 
 /**
@@ -33,38 +35,16 @@ public class Robot extends TimedRobot {
   private Spark sideDrive = new Spark(4);
   private Joystick controller = new Joystick(0);
   private final Timer m_timer = new Timer();
+  private Command level1;
 
 
+  public OI() {
+		button1.whenPressed(new level1());
+		button2.whenPressed(new level2());
+		button3.whenPressed(new level3(0.11));
+    button4.whenPressed(new up());
+    button5.whenPressed(new down());
 
-
-  public class level1 extends Command {
-
-    /*
-     * 1.	Constructor - Might have parameters for this command such as target positions of devices. Should also set the name of the command for debugging purposes.
-     *  This will be used if the status is viewed in the dashboard. And the command should require (reserve) any devices is might use.
-     */
-      public level1() {
-        super("level1");
-          requires(elevator);
-      }
-  
-      // 	initialize() - This method sets up the command and is called immediately before the command is executed for the first time and every subsequent time it is started .
-      //  Any initialization code should be here. 
-      protected void initialize() {
-      }
-  
-      /*
-       *	execute() - This method is called periodically (about every 20ms) and does the work of the command. Sometimes, if there is a position a
-       *  subsystem is moving to, the command might set the target position for the subsystem in initialize() and have an empty execute() method.
-       */
-      protected void execute() {
-      }
-  
-      // Make this return true when this Command no longer needs to run execute()
-      protected boolean isFinished() {
-          return false;
-      }
-  }
   
 
 
@@ -74,7 +54,7 @@ public class Robot extends TimedRobot {
    * used for any initialization code.
    */
   @Override
-  public void robotInit() {
+  public void robotInit() { 
   }
 
   /**
@@ -136,25 +116,6 @@ public class Robot extends TimedRobot {
     }
 
 
-
-    //Elevator
-
-    if (controller.getRawButton(1) && encodernot) { // Left trigger pressed, go left
-
-      sideDrive.set(.5);
-    }
-    if (controller.getRawButton(2) && encodernot) { // Left trigger pressed, go left
-
-      sideDrive.set(.5);
-    }
-    if (controller.getRawButton(3) && encodernot) { // Left trigger pressed, go left
-
-      sideDrive.set(.5);
-    }
-    if (controller.getRawButton(7) && encodernot) { // Left trigger pressed, go left
-
-      sideDrive.set(.5);
-    }
 
   }
 
