@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 
+
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the TimedRobot
@@ -23,7 +24,7 @@ import edu.wpi.first.wpilibj.SpeedControllerGroup;
  */
 public class Robot extends TimedRobot {
   private Spark m_frontLeft = new Spark(1);
-	private Spark m_rearLeft = new Spark(0);
+  private Spark m_rearLeft = new Spark(0);
 	private SpeedControllerGroup m_left = new SpeedControllerGroup(m_frontLeft, m_rearLeft);
 	private Spark m_frontRight = new Spark(3);
 	private Spark m_rearRight = new Spark(2);
@@ -88,26 +89,23 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
 
     //Basic drive
-    m_robotdrive.arcadeDrive(controller.getY(), controller.getX()*-1);
+    m_robotdrive.arcadeDrive(controller.getY()*-1, controller.getX());
 
 
     //Side drive
-
-
     if (controller.getRawButton(7)) { // Left trigger pressed, go left
 
       sideDrive.set(.5);
     }
-
-
     else if (controller.getRawButton(8)) { // Right trigger pressed, go right
 
-      sideDrive.set(.5);
+      sideDrive.set(-.5);
     }
-
     else {
       sideDrive.set(0);
     }
+
+
 
     //Elevator
     
