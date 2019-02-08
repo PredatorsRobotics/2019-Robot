@@ -34,16 +34,20 @@ public class Robot extends TimedRobot {
 	private DifferentialDrive m_robotdrive = new DifferentialDrive(m_left, m_right);
   private Spark sideDrive = new Spark(4);
   private Joystick controller = new Joystick(0);
+  private Joystick controller2 = new Joystick(1);
   private final Timer m_timer = new Timer();
   private Command level1;
+  private Button yButton = new JoystickButton(controller2, 4),
+	private Button bButton = new JoystickButton(controller2, 3),
+  private Button aButton = new JoystickButton(controller2, 2),
+  private boolean isCarrying;
 
 
   public OI() {
-		button1.whenPressed(new level1());
-		button2.whenPressed(new level2());
-		button3.whenPressed(new level3(0.11));
-    button4.whenPressed(new up());
-    button5.whenPressed(new down());
+		button4.whenPressed(new level1());
+		button3.whenPressed(new level2());
+		button2.whenPressed(new level3());
+  
 
   
 
@@ -115,6 +119,14 @@ public class Robot extends TimedRobot {
       sideDrive.set(0);
     }
 
+    //Carry hatch cover
+    if (controller2.getX() > 0){
+      System.out.println ("Up works.");
+    }
+
+    if (controller2.getX() < 0){
+      System.out.println ("Down works.");
+    }
 
 
   }
