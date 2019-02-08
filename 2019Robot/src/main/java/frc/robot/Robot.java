@@ -35,18 +35,30 @@ public class Robot extends TimedRobot {
   private Joystick controller = new Joystick(0);
   private Joystick controller2 = new Joystick(1);
   private final Timer m_timer = new Timer();
-  private Command level1;
+  private Joystick controller2 = new Joystick(1);
   //private Button yButton = new JoystickButton(controller2, 4);
 	//private Button bButton = new JoystickButton(controller2, 3);
   //private Button aButton = new JoystickButton(controller2, 2);
   private boolean isCarrying;
+  private Command level0;
+  private Command level1;
+  private Command level2;
 
+  public static class OI {
+    //Create Joystick and Buttons
+    static Joystick m_stick = new Joystick(1);
+    private Button yButton = new JoystickButton(controller2, 3);
+	  private Button bButton = new JoystickButton(controller2, 2);
+    private Button aButton = new JoystickButton(controller2, 1);
+    private Button xButton = new JoystickButton(controller2, 0);
 
-  //public OI() {
-		//button4.whenPressed(new level1());
-		//button3.whenPressed(new level2());
-	//	button2.whenPressed(new level3());
-  //}
+    public OI() {
+		ybutton.whenPressed(new level0());
+		bbutton.whenPressed(new level1());
+    abutton.whenPressed(new level2());
+    xbutton.whenpressed(new toggleCarry());
+    }
+  }
 
   
 
@@ -58,6 +70,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() { 
+    OI myOI = new OI();
   }
 
   /**
@@ -120,11 +133,11 @@ public class Robot extends TimedRobot {
 
     //Carry hatch cover
     if (controller2.getX() > 0){
-      System.out.println ("Up works.");
+      System.out.println ("");
     }
 
     if (controller2.getX() < 0){
-      System.out.println ("Down works.");
+      System.out.println ("");
     }
 
 
