@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.Command;
-import commands.java;
 
 
 /**
@@ -37,17 +36,17 @@ public class Robot extends TimedRobot {
   private Joystick controller2 = new Joystick(1);
   private final Timer m_timer = new Timer();
   private Command level1;
-  private Button yButton = new JoystickButton(controller2, 4),
-	private Button bButton = new JoystickButton(controller2, 3),
-  private Button aButton = new JoystickButton(controller2, 2),
+  //private Button yButton = new JoystickButton(controller2, 4);
+	//private Button bButton = new JoystickButton(controller2, 3);
+  //private Button aButton = new JoystickButton(controller2, 2);
   private boolean isCarrying;
 
 
-  public OI() {
-		button4.whenPressed(new level1());
-		button3.whenPressed(new level2());
-		button2.whenPressed(new level3());
-  
+  //public OI() {
+		//button4.whenPressed(new level1());
+		//button3.whenPressed(new level2());
+	//	button2.whenPressed(new level3());
+  //}
 
   
 
