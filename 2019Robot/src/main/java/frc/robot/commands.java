@@ -23,8 +23,27 @@ protected void initialize() {
 // Called repeatedly when this Command is scheduled to run
 @Override
 protected void execute() {
-    System.out.println("test");
+    if(isCarring()){ //If it's carrying
+        
+        
+        if(encoder != level0+x){ //if its not in the correct place
+            //move there
+        }
+        else { //if it's corect
+            //brake
+        }
+
+
+    }
     
+    else {
+        if(encoder != level0){ //if its not in the correct place
+            //move there
+        }
+        else { //if it's corect
+            //brake
+        }
+    }
 
 }
 
