@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.Encoder;
+//import edu.wpi.first.wpilibj.Talon;
 
 
 /**
@@ -25,23 +26,25 @@ import edu.wpi.first.wpilibj.Encoder;
  * directory.
  */
 public class Robot extends TimedRobot {
-  private Spark m_frontLeft = new Spark(1);
+  private Spark m_frontLeft =  new Spark(1);
   private Spark m_rearLeft = new Spark(0);
 	private SpeedControllerGroup m_left = new SpeedControllerGroup(m_frontLeft, m_rearLeft);
 	private Spark m_frontRight = new Spark(3);
 	private Spark m_rearRight = new Spark(2);
   private SpeedControllerGroup m_right = new SpeedControllerGroup(m_frontRight, m_rearRight);
 	private DifferentialDrive m_robotdrive = new DifferentialDrive(m_left, m_right);
-  private Spark sideDrive = new Spark(7);
+  //private Talon sideDrive = new Talon(7);
   private Joystick controller = new Joystick(0);
   private Joystick controller2 = new Joystick(1);
   private final Timer m_timer = new Timer();
   private boolean isCarrying;
   private Encoder elevatorEncoder = new Encoder(0, 1, false, Encoder.EncodingType.k4X);
-  private Encoder elevatorEncoder = new Encoder(2, 3, false, Encoder.EncodingType.k4X);
+  private Encoder fakeEncoder = new Encoder(2, 3, false, Encoder.EncodingType.k4X);
   private Spark l_elevator = new Spark(5);
   private Spark r_elevator = new Spark(4);
   private int targetHeight = 100;
+
+  //private Talon fake = new Talon(7);
   
    
   /**
@@ -101,7 +104,7 @@ public class Robot extends TimedRobot {
     //Basic drive
     m_robotdrive.arcadeDrive(controller.getY()*-1, controller.getX());
 
-    //Side drive
+    /** ///Side drive
     if (controller.getRawButton(7)) { // Left trigger pressed, go left
       sideDrive.set(.5);
     }else if (controller.getRawButton(8)) { // Right trigger pressed, go right
@@ -110,7 +113,16 @@ public class Robot extends TimedRobot {
       sideDrive.set(0);
     }
 
+    if (controller.getRawButton(5)) { // Left trigger pressed, go left
+      fake.set(.5);
+    }else if (controller.getRawButton(6)) { // Right trigger pressed, go right
+      fake.set(-.5);
+    }else {
+     fake.set(0);
+    }
+*/
     System.out.println(elevatorEncoder.get());
+    System.out.println(fakeEncoder.get());
     /**
     //Elevator Stuff
     if(controller2.getRawButtonPressed(0)){ // X pressed, toggle isCarrying
