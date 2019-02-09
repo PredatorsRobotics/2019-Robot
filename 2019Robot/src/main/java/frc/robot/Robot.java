@@ -34,34 +34,13 @@ public class Robot extends TimedRobot {
 	private DifferentialDrive m_robotdrive = new DifferentialDrive(m_left, m_right);
   private Spark sideDrive = new Spark(4);
   private Joystick controller = new Joystick(0);
+  private Joystick controller2 = new Joystick(1);
   private final Timer m_timer = new Timer();
   private boolean isCarrying;
-  private Command level0;
-  private Command level1;
-  private Command level2;
-  private Command toggleCarry;
   private Encoder elevatorEncoder = new Encoder(0, 1, false, Encoder.EncodingType.k4X);
+  private Spark l_elevator = new Spark(5);
+  private Spark r_elevator = new Spark(4);
   
-
-  public static class OI {
-    //Create Joystick and Buttons
-    static Joystick controller2 = new Joystick(1);
-    private Button yButton = new JoystickButton(controller2, 3);
-	  private Button bButton = new JoystickButton(controller2, 2);
-    private Button aButton = new JoystickButton(controller2, 1);
-    private Button xButton = new JoystickButton(controller2, 0);
-
-    public OI() {
-		ybutton.whenPressed(new level0());
-		bbutton.whenPressed(new level1());
-    abutton.whenPressed(new level2());
-    xbutton.whenpressed(new toggleCarry());
-    }
-  }
-
-  
-
-
    
   /**
    * This function is run when the robot is first started up and should be
@@ -69,7 +48,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() { 
-    OI myOI = new OI();
   }
 
   /**
@@ -112,7 +90,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-
+    int value1;
     //Basic drive
     m_robotdrive.arcadeDrive(controller.getY()*-1, controller.getX());
 
@@ -130,10 +108,44 @@ public class Robot extends TimedRobot {
       sideDrive.set(0);
     }
 
-    //encoder testing
-    if(controller.getRawButton(9)){
-      System.out.println(sampleEncoder.get());
+    if(controller.getRawButtonPressed(9)){
+      l_elevator.set(.25);
+      r_elevator.set(.25);
     }
+
+    else if(controller.getRawButtonPressed(10)){
+      l_elevator.set(-.25);
+      r_elevator.set(-.25);
+    }
+
+    else{
+      l_elevator.set(0);
+      r_elevator.set(0);
+    }
+
+    System.out.println(elevatorEncoder.get());
+  /**  //Elevator Stuff
+    if(controller2.getRawButtonPressed(0)){ // X pressed, toggle isCarrying
+      isCarrying = !isCarrying;
+    }
+
+
+    if(isCarrying){
+      value1 = 2
+    }
+    else{
+      value = 0;
+    }
+
+
+    if(controller2.getRawButtonPressed(3) ||
+     controller2.getRawButtonPressed(2) || 
+     controller2.getRawButtonPressed(1)){
+      
+    elevator.set(goToLevel + value)
+    }*/
+
+
   }
 
   /**
