@@ -38,8 +38,10 @@ public class Robot extends TimedRobot {
   private final Timer m_timer = new Timer();
   private boolean isCarrying;
   private Encoder elevatorEncoder = new Encoder(0, 1, false, Encoder.EncodingType.k4X);
+  private Encoder elevatorEncoder = new Encoder(2, 3, false, Encoder.EncodingType.k4X);
   private Spark l_elevator = new Spark(5);
   private Spark r_elevator = new Spark(4);
+  private int targetHeight = 100;
   
    
   /**
@@ -75,7 +77,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopInit() {
-
+    elevatorEncoder.reset();
+    System.out.println("This works, dude.");
 
   }
 
@@ -90,62 +93,70 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    int value1;
+
+    int carryOffset;// isCarrying input
+    int elevatorSpeed; 
+
+
     //Basic drive
     m_robotdrive.arcadeDrive(controller.getY()*-1, controller.getX());
 
-
     //Side drive
     if (controller.getRawButton(7)) { // Left trigger pressed, go left
-
       sideDrive.set(.5);
-    }
-    else if (controller.getRawButton(8)) { // Right trigger pressed, go right
-
+    }else if (controller.getRawButton(8)) { // Right trigger pressed, go right
       sideDrive.set(-.5);
-    }
-    else {
+    }else {
       sideDrive.set(0);
     }
 
-    if(controller.getRawButton(9)){//UP
-      l_elevator.set(.75);
-      r_elevator.set(.75);
-    }
-
-    else if(controller.getRawButton(10)){//DOWN
-      l_elevator.set(-.50);
-      r_elevator.set(-.50);
-    }
-
-    else{
-      l_elevator.set(0);
-      r_elevator.set(0);
-    }
-
     System.out.println(elevatorEncoder.get());
-  /**  //Elevator Stuff
+    /**
+    //Elevator Stuff
     if(controller2.getRawButtonPressed(0)){ // X pressed, toggle isCarrying
       isCarrying = !isCarrying;
     }
 
 
     if(isCarrying){
-      value1 = 2
+      carryOffset = 2;
     }
     else{
-      value = 0;
+      carryOffset = 0;
     }
 
+    if(controller2.getRawButtonPressed(1)){
+      targetHeight = 10 + carryOffset;
+    }
+    if(controller2.getRawButtonPressed(2)){
+      targetHeight = 20 + carryOffset;
+    }
+    if(controller2.getRawButtonPressed(3)){
+      targetHeight = 30 + carryOffset;
+    }
 
-    if(controller2.getRawButtonPressed(3) ||
-     controller2.getRawButtonPressed(2) || 
-     controller2.getRawButtonPressed(1)){
-      
-    elevator.set(goToLevel + value)
-    }*/
+    if(sampleEncoder.get() > targetHeight){
+      elevatorSpeed = -.5;
+    }else if(sampleEncoder.get() < targetHeight)){
+      elevatorSpeed = .75;
+    }else{
+      elevatorSpeed = 0;
+    }
+    
+    l_elevator.set(elevatorSpeed);
+    r_elevator.set(elevatorSpeed);
+    */
 
-
+    if(controller.getRawButton(9)){//UP
+      l_elevator.set(.75);
+      r_elevator.set(.75);
+    }else if(controller.getRawButton(10)){//DOWN
+      l_elevator.set(-.50);
+      r_elevator.set(-.50);
+    }else{
+      l_elevator.set(0);
+      r_elevator.set(0);
+    }
   }
 
   /**
