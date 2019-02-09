@@ -32,7 +32,7 @@ public class Robot extends TimedRobot {
 	private Spark m_rearRight = new Spark(2);
   private SpeedControllerGroup m_right = new SpeedControllerGroup(m_frontRight, m_rearRight);
 	private DifferentialDrive m_robotdrive = new DifferentialDrive(m_left, m_right);
-  private Spark sideDrive = new Spark(4);
+  private Spark sideDrive = new Spark(7);
   private Joystick controller = new Joystick(0);
   private Joystick controller2 = new Joystick(1);
   private final Timer m_timer = new Timer();
@@ -108,14 +108,14 @@ public class Robot extends TimedRobot {
       sideDrive.set(0);
     }
 
-    if(controller.getRawButtonPressed(9)){
-      l_elevator.set(.25);
-      r_elevator.set(.25);
+    if(controller.getRawButton(9)){//UP
+      l_elevator.set(.75);
+      r_elevator.set(.75);
     }
 
-    else if(controller.getRawButtonPressed(10)){
-      l_elevator.set(-.25);
-      r_elevator.set(-.25);
+    else if(controller.getRawButton(10)){//DOWN
+      l_elevator.set(-.50);
+      r_elevator.set(-.50);
     }
 
     else{
