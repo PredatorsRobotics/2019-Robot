@@ -39,12 +39,9 @@ public class Robot extends TimedRobot {
   private final Timer m_timer = new Timer();
   private boolean isCarrying;
   private Encoder elevatorEncoder = new Encoder(0, 1, false, Encoder.EncodingType.k4X);
-  private Encoder fakeEncoder = new Encoder(2, 3, false, Encoder.EncodingType.k4X);
   private Spark l_elevator = new Spark(5);
   private Spark r_elevator = new Spark(4);
-  private int targetHeight = 100;
-
-  //private Talon fake = new Talon(7);
+  private int targetHeight = 1;
   
    
   /**
@@ -81,7 +78,6 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     elevatorEncoder.reset();
-    System.out.println("This works, dude.");
 
   }
 
@@ -99,6 +95,7 @@ public class Robot extends TimedRobot {
 
     int carryOffset;// isCarrying input
     int elevatorSpeed; 
+    int whenClose;
 
 
     //Basic drive
@@ -112,18 +109,9 @@ public class Robot extends TimedRobot {
     }else {
       sideDrive.set(0);
     }
-
-    if (controller.getRawButton(5)) { // Left trigger pressed, go left
-      fake.set(.5);
-    }else if (controller.getRawButton(6)) { // Right trigger pressed, go right
-      fake.set(-.5);
-    }else {
-     fake.set(0);
-    }
 */
     System.out.println(elevatorEncoder.get());
-    System.out.println(fakeEncoder.get());
-    /**
+    
     //Elevator Stuff
     if(controller2.getRawButtonPressed(0)){ // X pressed, toggle isCarrying
       isCarrying = !isCarrying;
@@ -131,43 +119,52 @@ public class Robot extends TimedRobot {
 
 
     if(isCarrying){
-      carryOffset = 2;
+      carryOffset = 2;//IN INCHES****
     }
     else{
       carryOffset = 0;
     }
 
-    if(controller2.getRawButtonPressed(1)){
-      targetHeight = 10 + carryOffset;
+    if(sampleEncoder.get() > ((targetHeight - .5) * 65.4) ||
+      (sampleEncoder.get() < ((targetHeight + .5) * 65.4){
+      whenClose = .25;
     }
-    if(controller2.getRawButtonPressed(2)){
-      targetHeight = 20 + carryOffset;
-    }
-    if(controller2.getRawButtonPressed(3)){
-      targetHeight = 30 + carryOffset;
+    else{
+      whenClose = 1;
     }
 
-    if(sampleEncoder.get() > targetHeight){
-      elevatorSpeed = -.5;
-    }else if(sampleEncoder.get() < targetHeight)){
-      elevatorSpeed = .75;
+    if (controller.getRawButton(9) || controller.getRawButton(10)){
+      if(controller.getRawButton(9)){//UP
+        l_elevator.set(.75);
+        r_elevator.set(.75);
+      }else if(controller.getRawButton(10)){//DOWN
+        l_elevator.set(-.50);
+        r_elevator.set(-.50);
+      }else{
+        l_elevator.set(0);
+        r_elevator.set(0);
+      }
     }else{
-      elevatorSpeed = 0;
-    }
-    
-    l_elevator.set(elevatorSpeed);
-    r_elevator.set(elevatorSpeed);
-    */
+      if(controller2.getRawButtonPressed(1)){
+        targetHeight = .5 + carryOffset; //IN INCHES****
+      }
+      if(controller2.getRawButtonPressed(2)){//IN INCHES****
+        targetHeight = 20 + carryOffset;
+      }
+      if(controller2.getRawButtonPressed(3)){//IN INCHES****
+        targetHeight = 30 + carryOffset;
+      }
 
-    if(controller.getRawButton(9)){//UP
-      l_elevator.set(.75);
-      r_elevator.set(.75);
-    }else if(controller.getRawButton(10)){//DOWN
-      l_elevator.set(-.50);
-      r_elevator.set(-.50);
-    }else{
-      l_elevator.set(0);
-      r_elevator.set(0);
+      if(sampleEncoder.get() > ((targetHeight * 65.4){//Convert to counts
+        elevatorSpeed = (-.5 * whenClose);
+      }else if(sampleEncoder.get() < (targetHeight * 65.4)){//Convert to counts
+        elevatorSpeed = (.75 * whenClose);
+      }else{
+        elevatorSpeed = 0;
+      }
+      
+      l_elevator.set(elevatorSpeed);
+      r_elevator.set(elevatorSpeed);
     }
   }
 
