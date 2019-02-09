@@ -41,7 +41,7 @@ public class Robot extends TimedRobot {
   private Encoder elevatorEncoder = new Encoder(0, 1, false, Encoder.EncodingType.k4X);
   private Spark l_elevator = new Spark(5);
   private Spark r_elevator = new Spark(4);
-  private int targetHeight = 1;
+  private double targetHeight = 1;
   
    
   /**
@@ -93,9 +93,9 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
 
-    int carryOffset;// isCarrying input
-    int elevatorSpeed; 
-    int whenClose;
+    double carryOffset;// isCarrying input
+    double elevatorSpeed; 
+    double whenClose;
 
 
     //Basic drive
@@ -113,24 +113,24 @@ public class Robot extends TimedRobot {
     System.out.println(elevatorEncoder.get());
     
     //Elevator Stuff
-    if(controller2.getRawButtonPressed(0)){ // X pressed, toggle isCarrying
+    if(controller2.getRawButtonPressed(1)){ // X pressed, toggle isCarrying
       isCarrying = !isCarrying;
     }
 
 
     if(isCarrying){
-      carryOffset = 2;//IN INCHES****
+      carryOffset = 3;//IN INCHES****
     }
     else{
       carryOffset = 0;
     }
 
-    if(sampleEncoder.get() > ((targetHeight - .5) * 65.4) ||
-      (sampleEncoder.get() < ((targetHeight + .5) * 65.4){
+    if(elevatorEncoder.get() > ((targetHeight - .5) * 65.4)){
       whenClose = .25;
-    }
-    else{
-      whenClose = 1;
+    }else if(elevatorEncoder.get() > ((targetHeight - .5) * 65.4)){
+      whenClose = .25;
+    }else{
+    whenClose = 1;
     }
 
     if (controller.getRawButton(9) || controller.getRawButton(10)){
@@ -145,20 +145,20 @@ public class Robot extends TimedRobot {
         r_elevator.set(0);
       }
     }else{
-      if(controller2.getRawButtonPressed(1)){
+      if(controller2.getRawButtonPressed(4)){
         targetHeight = .5 + carryOffset; //IN INCHES****
       }
-      if(controller2.getRawButtonPressed(2)){//IN INCHES****
-        targetHeight = 20 + carryOffset;
-      }
       if(controller2.getRawButtonPressed(3)){//IN INCHES****
-        targetHeight = 30 + carryOffset;
+        targetHeight = 28 + carryOffset;
+      }
+      if(controller2.getRawButtonPressed(2)){//IN INCHES****
+        targetHeight = 56 + carryOffset;
       }
 
-      if(sampleEncoder.get() > ((targetHeight * 65.4){//Convert to counts
-        elevatorSpeed = (-.5 * whenClose);
-      }else if(sampleEncoder.get() < (targetHeight * 65.4)){//Convert to counts
-        elevatorSpeed = (.75 * whenClose);
+      if(elevatorEncoder.get() > (targetHeight * 65.4)){//Convert to counts
+        elevatorSpeed = (-.25 * whenClose);
+      }else if(elevatorEncoder.get() < (targetHeight * 65.4)){//Convert to counts
+        elevatorSpeed = (.4 * whenClose);
       }else{
         elevatorSpeed = 0;
       }
