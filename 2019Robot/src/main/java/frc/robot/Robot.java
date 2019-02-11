@@ -37,7 +37,7 @@ public class Robot extends TimedRobot {
   private Joystick controller = new Joystick(0);
   private Joystick controller2 = new Joystick(1);
   private final Timer m_timer = new Timer();
-  private boolean isCarrying;
+  private boolean isCarrying = false;
   private Encoder elevatorEncoder = new Encoder(0, 1, false, Encoder.EncodingType.k4X);
   private Spark l_elevator = new Spark(5);
   private Spark r_elevator = new Spark(4);
@@ -121,25 +121,25 @@ public class Robot extends TimedRobot {
 
 
     if(isCarrying){
-      carryOffset = 3;//IN INCHES****
+      carryOffset = 4;//IN INCHES****
     }
     else{
       carryOffset = 0;
     }
 
-    if (Math.abs(distanceToTravel) < 100 /*encoder units*/){
-      whenClose = .5;
+    if (Math.abs(distanceToTravel) < 200 /*encoder units*/){
+      whenClose = .35;
     }else{
     whenClose = 1;
     }
 
-    if (controller.getRawButton(9) || controller.getRawButton(10)){
-      if(controller.getRawButton(9)){//UP
-        l_elevator.set(.75);
-        r_elevator.set(.75);
-      }else if(controller.getRawButton(10)){//DOWN
-        l_elevator.set(-.50);
-        r_elevator.set(-.50);
+    if (controller.getRawButton(9) || controller.getRawButton(10) || controller2.getRawButton(5) || controller2.getRawButton(7)){
+      if(controller.getRawButton(9) || controller2.getRawButton(5)){//UP
+        l_elevator.set(.8);
+        r_elevator.set(.8);
+      }else if(controller.getRawButton(10)|| controller2.getRawButton(7)){//DOWN
+        l_elevator.set(-.5);
+        r_elevator.set(-.5);
       }else{
         l_elevator.set(0);
         r_elevator.set(0);
@@ -155,12 +155,12 @@ public class Robot extends TimedRobot {
         targetHeight = 56 + carryOffset;
       }
 
-      if(elevatorEncoder.get() > (targetHeight * 65.4)){//Convert to counts
-        elevatorSpeed = (-.25 * whenClose);
-      }else if(elevatorEncoder.get() < (targetHeight * 65.4)){//Convert to counts
-        elevatorSpeed = (.4 * whenClose);
+      if(elevatorEncoder.get() > ((targetHeight + .125) * 65.4)){//Convert to counts
+        elevatorSpeed = (-.7 * whenClose);
+      }else if(elevatorEncoder.get() < ((targetHeight - .125) * 65.4)){//Convert to counts
+        elevatorSpeed = (1 * whenClose);
       }else{
-        elevatorSpeed = 0;
+        elevatorSpeed = 0.15;
       }
       
       l_elevator.set(elevatorSpeed);
