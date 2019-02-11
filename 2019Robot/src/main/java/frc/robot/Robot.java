@@ -96,6 +96,8 @@ public class Robot extends TimedRobot {
     double carryOffset;// isCarrying input
     double elevatorSpeed; 
     double whenClose;
+    double distanceToTravel = elevatorEncoder.get() - targetHeight * 65.4;
+
 
 
     //Basic drive
@@ -125,10 +127,8 @@ public class Robot extends TimedRobot {
       carryOffset = 0;
     }
 
-    if(elevatorEncoder.get() > ((targetHeight - .5) * 65.4)){
-      whenClose = .25;
-    }else if(elevatorEncoder.get() > ((targetHeight - .5) * 65.4)){
-      whenClose = .25;
+    if (Math.abs(distanceToTravel) < 100 /*encoder units*/){
+      whenClose = .5;
     }else{
     whenClose = 1;
     }
