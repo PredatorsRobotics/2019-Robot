@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.Encoder;
-//import edu.wpi.first.wpilibj.Talon;
+//import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 
 /**
@@ -33,14 +33,17 @@ public class Robot extends TimedRobot {
 	private Spark m_rearRight = new Spark(2);
   private SpeedControllerGroup m_right = new SpeedControllerGroup(m_frontRight, m_rearRight);
 	private DifferentialDrive m_robotdrive = new DifferentialDrive(m_left, m_right);
-  //private Talon sideDrive = new Talon(7);
   private Joystick controller = new Joystick(0);
   private Joystick controller2 = new Joystick(1);
   private final Timer m_timer = new Timer();
   private boolean isCarrying = false;
+  private boolean wannaGoSlower = false;
   private Encoder elevatorEncoder = new Encoder(0, 1, false, Encoder.EncodingType.k4X);
+  private Encoder dinoEncoder = new Encoder(2, 3, false, Encoder.EncodingType.k4X);
   private Spark l_elevator = new Spark(5);
   private Spark r_elevator = new Spark(4);
+  //private TalonSRX sideDrive = new TalonSRX(6);
+ // private TalonSRX dinoArms = new TalonSRX(7);
   private double targetHeight = 1;
   
    
@@ -69,7 +72,7 @@ public class Robot extends TimedRobot {
       m_robotdrive.stopMotor(); // stop robot
     }
   }
-*/
+  */
 
 
   /**
@@ -97,22 +100,49 @@ public class Robot extends TimedRobot {
     double elevatorSpeed; 
     double whenClose;
     double distanceToTravel = elevatorEncoder.get() - targetHeight * 65.4;
+    double driveSpeed;
+
+
+    //half Speed thing
+    if(controller.getRawButtonPressed(1)){ // 1 pressed, toggle driveSpeed
+      wannaGoSlower = !wannaGoSlower;
+    }
+    if(wannaGoSlower){
+      driveSpeed = .5;
+    }else{
+      driveSpeed = 1;
+    }
 
 
 
     //Basic drive
     m_robotdrive.arcadeDrive(controller.getY()*-1, controller.getX());
 
-    /** ///Side drive
-    if (controller.getRawButton(7)) { // Left trigger pressed, go left
-      sideDrive.set(.5);
-    }else if (controller.getRawButton(8)) { // Right trigger pressed, go right
-      sideDrive.set(-.5);
-    }else {
-      sideDrive.set(0);
-    }
-*/
-    System.out.println(elevatorEncoder.get());
+    //Side drive
+    //if (controller.getRawButton(7)) { // Left trigger pressed, go left
+      //sideDrive.set(.5);
+    //}else if (controller.getRawButton(8)) { // Right trigger pressed, go right
+      //sideDrive.set(-.5);
+    //}else {
+      //sideDrive.set(0);
+    //}
+
+
+    // homing program
+  if(controller2.getRawButtonPressed(10)){
+      m_timer.reset();
+      m_timer.start();
+
+      if(m_timer.get() < 5.0){
+        l_elevator.set(-.10);
+        r_elevator.set(-.10);
+      }else if(m_timer.get() < 5.1){
+        elevatorEncoder.reset();
+      }
+  }
+
+  
+
     
     //Elevator Stuff
     if(controller2.getRawButtonPressed(1)){ // X pressed, toggle isCarrying
@@ -121,9 +151,8 @@ public class Robot extends TimedRobot {
 
 
     if(isCarrying){
-      carryOffset = 4;//IN INCHES****
-    }
-    else{
+      carryOffset = 4.75;//IN INCHES****
+    }else{
       carryOffset = 0;
     }
 
@@ -133,11 +162,11 @@ public class Robot extends TimedRobot {
     whenClose = 1;
     }
 
-    if (controller.getRawButton(9) || controller.getRawButton(10) || controller2.getRawButton(5) || controller2.getRawButton(7)){
-      if(controller.getRawButton(9) || controller2.getRawButton(5)){//UP
+    if (controller.getRawButton(9) || controller.getRawButton(10)){
+      if(controller.getRawButton(9)){//UP
         l_elevator.set(.8);
         r_elevator.set(.8);
-      }else if(controller.getRawButton(10)|| controller2.getRawButton(7)){//DOWN
+      }else if(controller.getRawButton(10)){//DOWN
         l_elevator.set(-.5);
         r_elevator.set(-.5);
       }else{
@@ -152,13 +181,16 @@ public class Robot extends TimedRobot {
         targetHeight = 28 + carryOffset;
       }
       if(controller2.getRawButtonPressed(2)){//IN INCHES****
-        targetHeight = 56 + carryOffset;
+        targetHeight = 58 + carryOffset;
+      }
+      if(controller2.getRawButtonPressed(9)){//IN INCHES****
+        targetHeight = 10;
       }
 
       if(elevatorEncoder.get() > ((targetHeight + .125) * 65.4)){//Convert to counts
         elevatorSpeed = (-.7 * whenClose);
       }else if(elevatorEncoder.get() < ((targetHeight - .125) * 65.4)){//Convert to counts
-        elevatorSpeed = (1 * whenClose);
+        elevatorSpeed = (.8 * whenClose);
       }else{
         elevatorSpeed = 0.15;
       }
