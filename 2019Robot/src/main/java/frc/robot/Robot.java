@@ -112,19 +112,7 @@ public class Robot extends TimedRobot {
       sideDrive.set(0);
     }
 */
-if(controller2.getRawButtonPressed(10)){
-  m_timer.reset();
-  m_timer.start();
-
-  if(m_timer.get() < 5.0){
-    l_elevator.set(-.10);
-    r_elevator.set(-.10);
-  }else if(m_timer.get() < 5.1){
-    elevatorEncoder.reset();
-  }
-}
-
-
+    System.out.println(elevatorEncoder.get());
     
     //Elevator Stuff
     if(controller2.getRawButtonPressed(1)){ // X pressed, toggle isCarrying
@@ -133,7 +121,7 @@ if(controller2.getRawButtonPressed(10)){
 
 
     if(isCarrying){
-      carryOffset = 4.75;//IN INCHES****
+      carryOffset = 4;//IN INCHES****
     }
     else{
       carryOffset = 0;
@@ -164,13 +152,13 @@ if(controller2.getRawButtonPressed(10)){
         targetHeight = 28 + carryOffset;
       }
       if(controller2.getRawButtonPressed(2)){//IN INCHES****
-        targetHeight = 58 + carryOffset;
+        targetHeight = 56 + carryOffset;
       }
 
       if(elevatorEncoder.get() > ((targetHeight + .125) * 65.4)){//Convert to counts
         elevatorSpeed = (-.7 * whenClose);
       }else if(elevatorEncoder.get() < ((targetHeight - .125) * 65.4)){//Convert to counts
-        elevatorSpeed = (.8 * whenClose);
+        elevatorSpeed = (1 * whenClose);
       }else{
         elevatorSpeed = 0.15;
       }
