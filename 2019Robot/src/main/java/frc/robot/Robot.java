@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.Encoder;
-//import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import edu.wpi.first.wpilibj.PWMTalonSRX;
 
 
 /**
@@ -38,13 +38,16 @@ public class Robot extends TimedRobot {
   private final Timer m_timer = new Timer();
   private boolean isCarrying = false;
   private boolean wannaGoSlower = false;
+  private boolean isUp = false;
   private Encoder elevatorEncoder = new Encoder(0, 1, false, Encoder.EncodingType.k4X);
   private Encoder dinoEncoder = new Encoder(2, 3, false, Encoder.EncodingType.k4X);
-  private Spark l_elevator = new Spark(5);
-  private Spark r_elevator = new Spark(4);
-  //private TalonSRX sideDrive = new TalonSRX(6);
- // private TalonSRX dinoArms = new TalonSRX(7);
+  private PWMTalonSRX l_elevator = new PWMTalonSRX(5);
+  private PWMTalonSRX r_elevator = new PWMTalonSRX(4);
+  private PWMTalonSRX sideDrive = new PWMTalonSRX(6);
+  private PWMTalonSRX dinoArms = new PWMTalonSRX(7);
   private double targetHeight = 1;
+  private double standardLevels = 1;
+  private double rotationValue = 1;
   
    
   /**
@@ -55,14 +58,14 @@ public class Robot extends TimedRobot {
   public void robotInit() { 
   }
 
-  /**
-   * This function is run once each time the robot enters autonomous mode.
+  
+   // This function is run once each time the robot enters autonomous mode.
   @Override
   public void autonomousInit() {
     m_timer.reset();
     m_timer.start();
   }
-   * This function is called periodically during autonomous.
+   // This function is called periodically during autonomous.
   @Override
   public void autonomousPeriodic() {
     // Drive for 2 seconds
@@ -72,7 +75,7 @@ public class Robot extends TimedRobot {
       m_robotdrive.stopMotor(); // stop robot
     }
   }
-  */
+  
 
 
   /**
@@ -81,6 +84,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     elevatorEncoder.reset();
+    dinoEncoder.reset();
 
   }
 
@@ -101,6 +105,8 @@ public class Robot extends TimedRobot {
     double whenClose;
     double distanceToTravel = elevatorEncoder.get() - targetHeight * 65.4;
     double driveSpeed;
+    double dinoSpeed;
+    
 
 
     //half Speed thing
@@ -116,16 +122,16 @@ public class Robot extends TimedRobot {
 
 
     //Basic drive
-    m_robotdrive.arcadeDrive(controller.getY()*-1, controller.getX());
+    m_robotdrive.arcadeDrive(controller.getY()*-1 * driveSpeed, controller.getX() * driveSpeed);
 
     //Side drive
-    //if (controller.getRawButton(7)) { // Left trigger pressed, go left
-      //sideDrive.set(.5);
-    //}else if (controller.getRawButton(8)) { // Right trigger pressed, go right
-      //sideDrive.set(-.5);
-    //}else {
-      //sideDrive.set(0);
-    //}
+    if (controller.getRawButton(7)) { // Left trigger pressed, go left
+      sideDrive.set(.5);
+    }else if (controller.getRawButton(8)) { // Right trigger pressed, go right
+      sideDrive.set(-.5);
+    }else {
+      sideDrive.set(0);
+    }
 
 
     // homing program
@@ -174,17 +180,26 @@ public class Robot extends TimedRobot {
         r_elevator.set(0);
       }
     }else{
+
       if(controller2.getRawButtonPressed(4)){
-        targetHeight = .5 + carryOffset; //IN INCHES****
+        standardLevels = .5; //IN INCHES****
+      }
+      if(controller.getRawButtonPressed(2)){//IN INCHES****
+        standardLevels = 10;
       }
       if(controller2.getRawButtonPressed(3)){//IN INCHES****
-        targetHeight = 28 + carryOffset;
+        standardLevels = 28;
       }
       if(controller2.getRawButtonPressed(2)){//IN INCHES****
-        targetHeight = 58 + carryOffset;
+        standardLevels = 58;
       }
-      if(controller2.getRawButtonPressed(9)){//IN INCHES****
-        targetHeight = 10;
+
+      if(controller2.getRawButtonPressed(4) || 
+        controller2.getRawButtonPressed(3) || 
+        controller2.getRawButtonPressed(2) ||
+        controller2.getRawButtonPressed(1) ||
+        controller.getRawButtonPressed(2)){
+        targetHeight = standardLevels + carryOffset;
       }
 
       if(elevatorEncoder.get() > ((targetHeight + .125) * 65.4)){//Convert to counts
@@ -198,6 +213,27 @@ public class Robot extends TimedRobot {
       l_elevator.set(elevatorSpeed);
       r_elevator.set(elevatorSpeed);
     }
+
+    //Dino Arms
+    if(controller.getRawButtonPressed(2)){
+     isUp = !isUp;
+    }
+
+    if(isUp){
+      rotationValue = 10;//In Inches
+    }else{
+      rotationValue = 0;
+    }
+
+    if(dinoEncoder.get() > ((rotationValue + .125) * 65.4)){//Convert to counts
+      dinoSpeed = -.3;
+    }else if(dinoEncoder.get() < ((rotationValue - .125) * 65.4)){//Convert to counts
+      dinoSpeed = .3;
+    }else{
+      dinoSpeed = 0.05;
+    }
+
+    dinoArms.set(dinoSpeed);
   }
 
   /**
