@@ -107,6 +107,7 @@ public class Robot extends TimedRobot {
     double distanceToTravel = elevatorEncoder.get() - targetHeight * 65.4;
     double driveSpeed;
     double dinoSpeed;
+    int pressedButton = 0;
     
     SmartDashboard.putBoolean("DB/Button 0", isCarrying);
 
@@ -154,13 +155,14 @@ public class Robot extends TimedRobot {
     //Elevator Stuff
     if(controller2.getRawButtonPressed(1)){ // X pressed, toggle isCarrying
       isCarrying = !isCarrying;
+      pressedButton = 1;
     }
     if(isCarrying){
       carryOffset = 4.75;//IN INCHES****
     }else{
       carryOffset = 0;
     }
-    
+
 
     if (Math.abs(distanceToTravel) < 200 /*encoder units*/){
       whenClose = .35;
@@ -181,24 +183,27 @@ public class Robot extends TimedRobot {
       }
     }else{
 
+      
+
       if(controller2.getRawButtonPressed(4)){
         standardLevels = .5; //IN INCHES****
+        pressedButton = 4;
       }
       if(controller.getRawButtonPressed(2)){//IN INCHES****
         standardLevels = 10;
+        pressedButton = 21;
       }
       if(controller2.getRawButtonPressed(3)){//IN INCHES****
         standardLevels = 28;
+        pressedButton = 3;
       }
       if(controller2.getRawButtonPressed(2)){//IN INCHES****
         standardLevels = 58;
+        pressedButton = 22;
       }
+      
 
-      if(controller2.getRawButtonPressed(4) || 
-        controller2.getRawButtonPressed(3) || 
-        controller2.getRawButtonPressed(2) ||
-        controller2.getRawButtonPressed(1) ||
-        controller.getRawButtonPressed(2)){
+      if(pressedButton != 0){
         targetHeight = standardLevels + carryOffset;
       }
 
