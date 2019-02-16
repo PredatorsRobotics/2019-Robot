@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PWMTalonSRX;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 /**
@@ -107,7 +108,7 @@ public class Robot extends TimedRobot {
     double driveSpeed;
     double dinoSpeed;
     
-
+    SmartDashboard.putBoolean("DB/Button 0", isCarrying);
 
     //half Speed thing
     if(controller.getRawButtonPressed(1)){ // 1 pressed, toggle driveSpeed
@@ -154,18 +155,17 @@ public class Robot extends TimedRobot {
     if(controller2.getRawButtonPressed(1)){ // X pressed, toggle isCarrying
       isCarrying = !isCarrying;
     }
-
-
     if(isCarrying){
       carryOffset = 4.75;//IN INCHES****
     }else{
       carryOffset = 0;
     }
+    
 
     if (Math.abs(distanceToTravel) < 200 /*encoder units*/){
       whenClose = .35;
     }else{
-    whenClose = 1;
+      whenClose = 1;
     }
 
     if (controller.getRawButton(9) || controller.getRawButton(10)){
@@ -213,6 +213,8 @@ public class Robot extends TimedRobot {
       l_elevator.set(elevatorSpeed);
       r_elevator.set(elevatorSpeed);
     }
+
+
 
     //Dino Arms
     if(controller.getRawButtonPressed(2)){
