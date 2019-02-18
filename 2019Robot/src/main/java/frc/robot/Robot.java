@@ -39,16 +39,19 @@ public class Robot extends TimedRobot {
   private final Timer m_timer = new Timer();
   private boolean isCarrying = false;
   private boolean wannaGoSlower = false;
-  private boolean isUp = false;
+  private boolean isInPos0 = true;
+  private boolean isInPos1 = false;
+  private boolean isInPos2 = false;
+  private boolean isInPos3 = false;
   private Encoder elevatorEncoder = new Encoder(0, 1, false, Encoder.EncodingType.k4X);
   private Encoder dinoEncoder = new Encoder(2, 3, false, Encoder.EncodingType.k4X);
   private PWMTalonSRX l_elevator = new PWMTalonSRX(5);
   private PWMTalonSRX r_elevator = new PWMTalonSRX(4);
   private PWMTalonSRX sideDrive = new PWMTalonSRX(6);
   private PWMTalonSRX dinoArms = new PWMTalonSRX(7);
-  private double targetHeight = 1;
   private double standardLevels = 1;
   private double rotationValue = 1;
+  private double targetHeight = 1;
   
    
   /**
@@ -86,6 +89,7 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
     elevatorEncoder.reset();
     dinoEncoder.reset();
+    targetHeight = .5;
 
   }
 
@@ -108,6 +112,9 @@ public class Robot extends TimedRobot {
     double driveSpeed;
     double dinoSpeed;
     int pressedButton = 0;
+    int pressedButton2 = 0;
+    int dinoPosition = 0;
+    int dinoP = 0;
     
     SmartDashboard.putBoolean("DB/Button 0", isCarrying);
 
@@ -116,7 +123,7 @@ public class Robot extends TimedRobot {
       wannaGoSlower = !wannaGoSlower;
     }
     if(wannaGoSlower){
-      driveSpeed = .5;
+      driveSpeed = .75;
     }else{
       driveSpeed = 1;
     }
@@ -128,28 +135,12 @@ public class Robot extends TimedRobot {
 
     //Side drive
     if (controller.getRawButton(7)) { // Left trigger pressed, go left
-      sideDrive.set(.5);
+      sideDrive.set(.6);
     }else if (controller.getRawButton(8)) { // Right trigger pressed, go right
-      sideDrive.set(-.5);
+      sideDrive.set(-.6);
     }else {
       sideDrive.set(0);
     }
-
-
-    // homing program
-  if(controller2.getRawButtonPressed(10)){
-      m_timer.reset();
-      m_timer.start();
-
-      if(m_timer.get() < 5.0){
-        l_elevator.set(-.10);
-        r_elevator.set(-.10);
-      }else if(m_timer.get() < 5.1){
-        elevatorEncoder.reset();
-      }
-  }
-
-  
 
     
     //Elevator Stuff
@@ -165,7 +156,7 @@ public class Robot extends TimedRobot {
 
 
     if (Math.abs(distanceToTravel) < 200 /*encoder units*/){
-      whenClose = .35;
+      whenClose = .25;
     }else{
       whenClose = 1;
     }
@@ -190,7 +181,7 @@ public class Robot extends TimedRobot {
         pressedButton = 4;
       }
       if(controller.getRawButtonPressed(2)){//IN INCHES****
-        standardLevels = 10;
+        standardLevels = 11;
         pressedButton = 21;
       }
       if(controller2.getRawButtonPressed(3)){//IN INCHES****
@@ -198,7 +189,7 @@ public class Robot extends TimedRobot {
         pressedButton = 3;
       }
       if(controller2.getRawButtonPressed(2)){//IN INCHES****
-        standardLevels = 58;
+        standardLevels = 55;
         pressedButton = 22;
       }
       
@@ -207,44 +198,81 @@ public class Robot extends TimedRobot {
         targetHeight = standardLevels + carryOffset;
       }
 
-      if(elevatorEncoder.get() > ((targetHeight + .125) * 65.4)){//Convert to counts
-        elevatorSpeed = (-.7 * whenClose);
-      }else if(elevatorEncoder.get() < ((targetHeight - .125) * 65.4)){//Convert to counts
-        elevatorSpeed = (.8 * whenClose);
+      if(elevatorEncoder.get() > ((targetHeight + .15) * 65.4)){//Convert to counts
+        elevatorSpeed = (-.8 * whenClose);
+      }else if(elevatorEncoder.get() < ((targetHeight - .15) * 65.4)){//Convert to counts
+        elevatorSpeed = (1 * whenClose);
       }else{
-        elevatorSpeed = 0.15;
+        elevatorSpeed = 0.10;
       }
       
       l_elevator.set(elevatorSpeed);
       r_elevator.set(elevatorSpeed);
     }
 
+ // homing program
+ if(controller2.getRawButtonPressed(10)){
+  m_timer.reset();
+  m_timer.start();
 
+  if(m_timer.get() < 5.0){
+    l_elevator.set(-.20);
+    r_elevator.set(-.20);   
+  }else if(m_timer.get() < 5.1){
+    elevatorEncoder.reset();
+  }
+ }/**
+if(controller2.getRawButton(5)){//UP
+  dinoArms.set(-.4);
+}else if(controller2.getRawButton(7)){//DOWN
+  dinoArms.set(.3);
+}else{
+  dinoArms.set(-.1);
+}*/
 
     //Dino Arms
-    if(controller.getRawButtonPressed(2)){
-     isUp = !isUp;
+    if(controller2.getRawButtonPressed(5) && dinoP == 0){
+      pressedButton2 = 1;
+      dinoP = 1;
+      dinoPosition = 150;
+    }
+    if(controller2.getRawButtonPressed(5) && dinoP == 1){
+      pressedButton2 = 1;
+      dinoP = 2;
+      dinoPosition = 160;
+    }
+    if(controller2.getRawButtonPressed(5) && dinoP == 2){
+      pressedButton2 = 1;
+      dinoP = 3;
+      dinoPosition = 20;
+    }
+    if(controller2.getRawButtonPressed(5) && dinoP == 3){
+      pressedButton2 = 1;
+      dinoP = 4;
+      dinoPosition = 0;
     }
 
-    if(isUp){
-      rotationValue = 10;//In Inches
-    }else{
-      rotationValue = 0;
+    if(pressedButton2 != 0){
+      rotationValue = dinoPosition;
     }
-
-    if(dinoEncoder.get() > ((rotationValue + .125) * 65.4)){//Convert to counts
-      dinoSpeed = -.3;
-    }else if(dinoEncoder.get() < ((rotationValue - .125) * 65.4)){//Convert to counts
+    
+    if(dinoEncoder.get() > (rotationValue + 3)){
+      dinoSpeed = -.4;
+    }else if(dinoEncoder.get() < (rotationValue - 3)){
       dinoSpeed = .3;
     }else{
-      dinoSpeed = 0.05;
+      dinoSpeed = -.05;
     }
 
     dinoArms.set(dinoSpeed);
+  
+   // dinoArms.set(dinoSpeed);
+    System.out.println(dinoEncoder.get());
   }
 
   /**
-   * This function is called periodically during test mode.
+   * This function is 
+   * called periodically during test mode.
    */
   @Override
   public void testPeriodic() {
