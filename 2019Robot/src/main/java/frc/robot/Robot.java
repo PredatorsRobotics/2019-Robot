@@ -39,10 +39,7 @@ public class Robot extends TimedRobot {
   private final Timer m_timer = new Timer();
   private boolean isCarrying = false;
   private boolean wannaGoSlower = false;
-  private boolean isInPos0 = true;
-  private boolean isInPos1 = false;
-  private boolean isInPos2 = false;
-  private boolean isInPos3 = false;
+  private boolean isAutoCenter = false;
   private Encoder elevatorEncoder = new Encoder(0, 1, false, Encoder.EncodingType.k4X);
   private Encoder dinoEncoder = new Encoder(2, 3, false, Encoder.EncodingType.k4X);
   private PWMTalonSRX l_elevator = new PWMTalonSRX(5);
@@ -52,6 +49,8 @@ public class Robot extends TimedRobot {
   private double standardLevels = 1;
   private double rotationValue = 1;
   private double targetHeight = 1;
+  private AnalogInput ai = new AnalogInput(0);
+
   
    
   /**
@@ -110,13 +109,15 @@ public class Robot extends TimedRobot {
     double whenClose;
     double distanceToTravel = elevatorEncoder.get() - targetHeight * 65.4;
     double driveSpeed;
-    double dinoSpeed;
+    double dinoSpeed = 0;
     int pressedButton = 0;
     int pressedButton2 = 0;
     int dinoPosition = 0;
     int dinoP = 0;
     
-    SmartDashboard.putBoolean("DB/Button 0", isCarrying);
+    SmartDashboard.putBoolean("DB/LED 0", isCarrying);
+    SmartDashboard.putBoolean("DB/LED 1", wannaGoSlower);
+    SmartDashboard.putBoolean("DB/LED 2", isAutoCenter);
 
     //half Speed thing
     if(controller.getRawButtonPressed(1)){ // 1 pressed, toggle driveSpeed
@@ -134,13 +135,28 @@ public class Robot extends TimedRobot {
     m_robotdrive.arcadeDrive(controller.getY()*-1 * driveSpeed, controller.getX() * driveSpeed);
 
     //Side drive
-    if (controller.getRawButton(7)) { // Left trigger pressed, go left
-      sideDrive.set(.6);
-    }else if (controller.getRawButton(8)) { // Right trigger pressed, go right
-      sideDrive.set(-.6);
-    }else {
-      sideDrive.set(0);
+    if(controller.getRawButtonPressed(3)){
+      isAutoCenter = !isAutoCenter;
     }
+    if(isAutoCenter){
+      //auto side drive
+      if(ai.getValue() > 1.75 && ai.getValue() < 3.2){
+        sideDrive.set(.4);
+      }else if(ai.getValue < 1.65 && ai.getValue() > .1){
+        sideDrive.set(-.4);
+      }else{
+        sideDrive.set(0);
+      }
+    }else{
+      if (controller.getRawButton(7)) { // Left trigger pressed, go left
+        sideDrive.set(.7);
+      }else if (controller.getRawButton(8)) { // Right trigger pressed, go right
+        sideDrive.set(-.7);
+      }else {
+        sideDrive.set(0);
+      }
+    }
+    
 
     
     //Elevator Stuff
@@ -221,55 +237,45 @@ public class Robot extends TimedRobot {
   }else if(m_timer.get() < 5.1){
     elevatorEncoder.reset();
   }
- }/**
-if(controller2.getRawButton(5)){//UP
-  dinoArms.set(-.4);
-}else if(controller2.getRawButton(7)){//DOWN
-  dinoArms.set(.3);
-}else{
-  dinoArms.set(-.1);
-}*/
+ }
 
     //Dino Arms
-    if(controller2.getRawButtonPressed(5) && dinoP == 0){
+    if(controller2.getRawButton(5)){//UP
+      dinoSpeed = -.4;
+    }else if(controller2.getRawButton(7)){//DOWN
+      dinoSpeed = .3;
+    }else if(controller2.getRawButton(9)){
+    
+      if(controller2.getRawButtonPressed(9)){
       pressedButton2 = 1;
       dinoP = 1;
-      dinoPosition = 150;
-    }
-    if(controller2.getRawButtonPressed(5) && dinoP == 1){
-      pressedButton2 = 1;
-      dinoP = 2;
-      dinoPosition = 160;
-    }
-    if(controller2.getRawButtonPressed(5) && dinoP == 2){
-      pressedButton2 = 1;
-      dinoP = 3;
-      dinoPosition = 20;
-    }
-    if(controller2.getRawButtonPressed(5) && dinoP == 3){
-      pressedButton2 = 1;
-      dinoP = 4;
-      dinoPosition = 0;
-    }
-
-    if(pressedButton2 != 0){
-      rotationValue = dinoPosition;
+      dinoPosition = 155;
+      }
+   
+      if(pressedButton2 != 0){
+        rotationValue = dinoPosition;
+      }
+      
+      if(dinoEncoder.get() > (rotationValue + 5)){
+        dinoSpeed = -.4;
+      }else if(dinoEncoder.get() < (rotationValue)){
+        dinoSpeed = .3;
+      }
+      
+    }else{
+      dinoSpeed = -.1;
     }
     
-    if(dinoEncoder.get() > (rotationValue + 3)){
-      dinoSpeed = -.4;
-    }else if(dinoEncoder.get() < (rotationValue - 3)){
-      dinoSpeed = .3;
-    }else{
-      dinoSpeed = -.05;
-    }
+  dinoArms.set(dinoSpeed);  
+  System.out.println(dinoEncoder.get());
 
-    dinoArms.set(dinoSpeed);
-  
-   // dinoArms.set(dinoSpeed);
-    System.out.println(dinoEncoder.get());
+
+
   }
-
+ 
+ 
+ 
+ 
   /**
    * This function is 
    * called periodically during test mode.
@@ -278,3 +284,4 @@ if(controller2.getRawButton(5)){//UP
   public void testPeriodic() {
   }
 }
+
